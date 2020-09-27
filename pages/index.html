@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+
+    <title>Throw Something</title>
+    <style>
+      .custom-file {
+        max-width: 70%;
+      }
+
+      .uploadfile {
+        margin-left: 15rem !important;
+      }
+
+      button {
+        background-color: gray;
+        border: none;
+        border-radius: 15px;
+        margin-bottom: 5px;
+      }
+      p {
+        margin-bottom: 5px !important;
+      }
+      a {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand">Bin</a>
+        <ul class="navbar-nav"></ul>
+      </div>
+    </nav>
+    <div class="jumbotron text-center bg-white mx-5">
+      <h1 class="display-2">Your Private Bin</h1>
+      <p class="lead text-muted">better than the public one</p>
+
+      <form
+        class="custom-file mt-5"
+        action="/files"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input
+          type="file"
+          name="upload"
+          id="myFile"
+          class="custom-file-input my-3"
+          onchange="text()"
+        />
+        <label id="label" class="custom-file-label" for="myfile"
+          >One file at a time</label
+        >
+        <input id="submit" class="btn btn-info" type="submit" value="submit" />
+      </form>
+      <div class="m-5 text-left uploadfile">
+        <h3 class="mb-4">My Item</h3>
+        <div id="myitem"></div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script src="index.js" type="text/javascript"></script> -->
+
+    <script>
+      let s = document.getElementById("submit");
+      s.addEventListener("click", function () {
+        myFunction();
+      });
+
+      function text() {
+        let x = document.getElementById("myFile");
+        let name;
+        if ("files" in x) {
+          for (var i = 0; i < x.files.length; i++) {
+            var file = x.files[i];
+            if ("name" in file) {
+              name = file.name;
+            }
+          }
+          document.getElementById("label").innerHTML = name;
+        }
+      }
+
+      function getUploadFile() {
+        fetch("http://localhost:8080/uploaded")
+          .then((res) => res.json())
+          .then((data) => {
+            const element = document.getElementById("myitem");
+            $("#myitem").empty();
+            for (let i = 0; i < data.length; i++) {
+              var button = document.createElement("button");
+              const para = document.createElement("p");
+              const aTag = document.createElement("a");
+              aTag.href = `http://localhost:8080/uploaded/${data[i].name}`;
+              aTag.innerHTML = "Download";
+              var node = document.createTextNode(data[i].name);
+              button.appendChild(aTag);
+              para.appendChild(node);
+              element.appendChild(para);
+              element.appendChild(button);
+            }
+          });
+      }
+
+      $(document).ready(function () {
+        getUploadFile();
+      });
+    </script>
+    <script type="text/javascript"></script>
+  </body>
+</html>
